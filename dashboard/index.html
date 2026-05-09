@@ -73,7 +73,7 @@
           </div>
           <div class="condition-row">
             <label>Condition to Assess</label>
-            <select name="condition">
+            <select name="condition" id="condition-select">
               <option value="pcos">PCOS</option>
               <option value="breast_cancer">Breast Cancer</option>
               <option value="cervical">Cervical Cancer</option>
@@ -124,6 +124,19 @@
         <div class="gauge-level" id="gauge-level">—</div>
         <div class="version-tag" id="model-version"></div>
       </div>
+    </div>
+
+    <!-- Dataset Provenance Card -->
+    <div class="card" id="provenance-card" style="display:none; margin-bottom:24px">
+      <h2>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Dataset Provenance
+      </h2>
+      <div id="provenance-name"   style="font-weight:700;font-size:0.9rem;margin-bottom:6px"></div>
+      <div id="provenance-meta"   style="font-size:0.82rem;color:#6b7280;margin-bottom:6px"></div>
+      <div id="provenance-note"   style="font-size:0.82rem;color:#4b5563;border-left:3px solid #7c3aed;padding-left:10px"></div>
     </div>
 
     <div class="card">

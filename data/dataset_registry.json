@@ -1,0 +1,75 @@
+{
+  "pcos": {
+    "source": "kaggle:prasoonkottarathil/polycystic-ovary-syndrome-pcos",
+    "secondary_source": "kaggle:shreyasvedpathak/pcos-dataset",
+    "rows": 541,
+    "positive_rate": 0.327,
+    "features": ["age","bmi","fsh_level","lh_level","amh_level","tsh_level","cycle_length_days","follicle_count","fatigue_score","weight_gain_kg"],
+    "label_column_original": "PCOS (Y/N)",
+    "license": "CC0",
+    "status": "trained",
+    "assigned_to": "Suraj"
+  },
+  "breast_cancer": {
+    "source": "kaggle:uciml/breast-cancer-wisconsin-data",
+    "rows": 569,
+    "positive_rate": 0.373,
+    "features": ["radius_mean","texture_mean","perimeter_mean","area_mean","smoothness_mean","compactness_mean","concavity_mean","concave_points_mean","symmetry_mean","fractal_dimension_mean"],
+    "label_column_original": "diagnosis (M=1, B=0)",
+    "license": "CC0",
+    "status": "trained",
+    "assigned_to": "Suraj"
+  },
+  "cervical": {
+    "source": "kaggle:ranzeet013/cervical-cancer-dataset",
+    "rows": 858,
+    "positive_rate": 0.055,
+    "features": "top 10 by SelectKBest from original 36",
+    "label_column_original": "Biopsy",
+    "license": "CC BY 4.0",
+    "status": "trained",
+    "assigned_to": "Suraj"
+  },
+  "thyroid": {
+    "source": "kaggle:yasserhessein/thyroid-disease-data-set",
+    "rows": 3771,
+    "positive_rate": 0.077,
+    "label_column_original": "binaryClass",
+    "license": "Public",
+    "status": "trained",
+    "assigned_to": "Kuber"
+  },
+  "diabetes": {
+    "source": "kaggle:uciml/pima-indians-diabetes-database",
+    "rows": 768,
+    "positive_rate": 0.349,
+    "label_column_original": "Outcome",
+    "license": "CC0",
+    "status": "trained",
+    "assigned_to": "Kuber"
+  },
+  "cardiovascular": {
+    "source": "kaggle:sulianova/cardiovascular-disease-dataset",
+    "rows": 70000,
+    "positive_rate": 0.499,
+    "label_column_original": "cardio",
+    "license": "CC BY 4.0",
+    "status": "trained",
+    "assigned_to": "Kuber"
+  },
+  "heart": {
+    "source": "kaggle:redwankarimsony/heart-disease-data",
+    "rows": 920,
+    "positive_rate": 0.553,
+    "label_column_original": "num (binarised > 0)",
+    "license": "CC BY 4.0",
+    "status": "trained",
+    "assigned_to": "Kuber"
+  },
+  "endometriosis": {
+    "source": "TBD — candidate: kaggle:michaelanietie/endometriosis-dataset (license verification pending)",
+    "status": "searching",
+    "assigned_to": "Akshara",
+    "search_notes": "Best candidate found: kaggle:michaelanietie/endometriosis-dataset (symptom-based, binary label). License must be confirmed as CC0/CC-BY before use. GLENDA dataset excluded (non-commercial only)."
+  }
+}

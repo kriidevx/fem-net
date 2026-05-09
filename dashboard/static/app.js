@@ -1,5 +1,54 @@
 'use strict';
 
+const DATASET_INFO = {
+  pcos: {
+    name: "PCOS Dataset — Prasoon Kottarathil + Shreyas Vedpathak",
+    meta: "Kaggle · CC0 · ~541 rows merged",
+    note: "LH/AMH ratios, follicle count, cycle length — primary PCOS markers"
+  },
+  breast_cancer: {
+    name: "Breast Cancer Wisconsin (Diagnostic) — UCI",
+    meta: "Kaggle · CC0 · 569 rows",
+    note: "Cell nucleus measurements (radius, texture, perimeter). Top 10 means selected."
+  },
+  cervical: {
+    name: "Cervical Cancer Risk Factors — Ranzeet013",
+    meta: "Kaggle · CC BY 4.0 · 858 rows",
+    note: "Biopsy as ground truth. Top 10 features selected via SelectKBest (f_classif)."
+  },
+  thyroid: {
+    name: "Thyroid Disease Dataset — Yasser Hessein",
+    meta: "Kaggle · Public · 3,771 rows",
+    note: "TSH, T3, T4, FTI levels. Binary: hypothyroid vs negative."
+  },
+  diabetes: {
+    name: "Pima Indians Diabetes Database — UCI",
+    meta: "Kaggle · CC0 · 768 rows",
+    note: "Female patients ≥21 years. Glucose, insulin, BMI, diabetes pedigree function."
+  },
+  cardiovascular: {
+    name: "Cardiovascular Disease Dataset — Sulianova",
+    meta: "Kaggle · CC BY 4.0 · 70,000 rows",
+    note: "Systolic/diastolic BP, cholesterol, glucose, BMI. Largest dataset in FEM-NET."
+  },
+  heart: {
+    name: "Heart Disease UCI — Redwan Karim Sony",
+    meta: "Kaggle · CC BY 4.0 · 920 rows",
+    note: "Cleveland + Hungary + VA + Switzerland combined. Target column binarised (num > 0)."
+  }
+};
+
+function updateProvenance() {
+  const condition = document.querySelector('select[name="condition"]').value;
+  const info = DATASET_INFO[condition];
+  const card = document.getElementById('provenance-card');
+  if (!info) { card.style.display = 'none'; return; }
+  document.getElementById('provenance-name').textContent = info.name;
+  document.getElementById('provenance-meta').textContent = info.meta;
+  document.getElementById('provenance-note').textContent = info.note;
+  card.style.display = 'block';
+}
+
 const API = '';
 
 // ── Gauge ──────────────────────────────────────────────────────────────────
@@ -157,6 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('patient-form').addEventListener('submit', runPrediction);
   document.getElementById('fl-btn').addEventListener('click', runFederated);
   document.getElementById('fl-refresh-btn').addEventListener('click', loadFLStatus);
+  document.querySelector('select[name="condition"]').addEventListener('change', updateProvenance);
   drawGauge(0);
   loadFLStatus();
+  updateProvenance();
 });
