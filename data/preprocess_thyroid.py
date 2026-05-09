@@ -13,51 +13,53 @@ def preprocess_thyroid():
 
     if not os.path.exists(input_path):
         print(f"File not found: {input_path}")
-        # Create dummy data for now so the script can still run and generate the target format
         print("Creating dummy data schema for demonstration...")
-        df = pd.DataFrame(columns=['Age', 'TSH', 'T3', 'Class'])
+        df = pd.DataFrame({
+            'Age': [30, 45, 55], 
+            'TSH': [1.5, 2.5, 0.5], 
+            'T3': [2.0, 1.8, 3.1], 
+            'Class': ['negative', 'P', 'negative']
+        })
     else:
         df = pd.read_csv(input_path)
 
-    # Standardize original column names for mapping
-    # Assuming standard representations in the raw file
-    col_mapping = {
-        'Age': 'age',
-        'age': 'age',
-        'TSH': 'tsh_level',
-        'tsh': 'tsh_level',
-        'Class': 'label',
-        'target': 'label',
-        'label': 'label'
-    }
+    # Standardize column names
+    mapped_cols = {col: 'label' for col in df.columns if col.lower() in ['class', 'binaryclass', 'target']}
+    mapped_cols.update({'Age': 'age', 'age': 'age', 'TSH': 'tsh_level', 'tsh': 'tsh_level', 'label': 'label'})
     
-    # Apply mapping
-    df = df.rename(columns=col_mapping)
+    df = df.rename(columns=mapped_cols)
+    
+    # If no recognized label column found, guess the last column
+    if 'label' not in df.columns:
+        last_col = df.columns[-1]
+        df = df.rename(columns={last_col: 'label'})
 
-    # Initialize processed dataframe with the exact FEM-NET schema structure
+    # Initialize processed dataframe with the exact schema
     processed_df = pd.DataFrame()
 
     for col in schema_cols:
         if col in df.columns:
             processed_df[col] = df[col]
         else:
-            # Fill missing columns with 0.0 as requested
             processed_df[col] = 0.0
 
-    # Clean the 'label' to ensure it's binary 0/1
-    if 'label' in processed_df.columns:
-        # Convert any existing labels to numeric, filling NaNs with 0
-        processed_df['label'] = pd.to_numeric(processed_df['label'], errors='coerce').fillna(0)
-        # Binarize: anything > 0 becomes 1
-        processed_df['label'] = processed_df['label'].apply(lambda x: 1 if float(x) > 0 else 0).astype(int)
+    # Clean the 'label' as instructed
+    def convert_label(val):
+        if pd.isna(val):
+            return 0
+        val_str = str(val).lower()
+        if 'negative' in val_str or '-' in val_str or val_str == 'n' or val_str == '0':
+            return 0
+        return 1
 
-    # Make sure output directory exists
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    
+    processed_df['label'] = df['label'].apply(convert_label).astype(int)
+
     # Save to processed directory
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
     processed_df.to_csv(output_path, index=False)
-    print(f"Successfully processed thyroid dataset and saved to {output_path}")
-    print(f"Columns: {list(processed_df.columns)}")
+    
+    print(f"Successfully processed thyroid dataset.")
+    print(f"Label Distribution:\n{processed_df['label'].value_counts()}")
 
 if __name__ == "__main__":
     preprocess_thyroid()
