@@ -3,8 +3,7 @@
 from __future__ import annotations
 import json
 import os
-from typing import Literal
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Query
 from api.schemas import FederatedStatus
 
 router = APIRouter()

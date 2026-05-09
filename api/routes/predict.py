@@ -8,7 +8,6 @@ import torch
 from fastapi import APIRouter, HTTPException
 
 from api.schemas import PatientInput, PredictionResponse
-from models.base_model import ClinicalMLP, set_parameters
 from models.condition_models import get_model
 
 router = APIRouter()
