@@ -1,0 +1,12 @@
+data/raw/
+data/datasets/
+data/processed/_sim_*.csv
+models/weights/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.DS_Store
+rag/cache/
+rag/indexes/
+simulation/results_*.json

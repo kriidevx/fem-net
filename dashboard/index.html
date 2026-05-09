@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FEM-NET — Federated Early Misdiagnosis Network</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+
+<header>
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <circle cx="16" cy="16" r="15" stroke="white" stroke-width="2"/>
+    <path d="M8 16 Q12 8 16 16 Q20 24 24 16" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="16" cy="16" r="3" fill="white"/>
+  </svg>
+  <h1>FEM-NET</h1>
+  <span class="badge">Federated · Privacy-Preserving</span>
+</header>
+
+<div class="layout">
+
+  <!-- LEFT COL: intake form + FL status -->
+  <div>
+    <div class="card" style="margin-bottom:24px">
+      <h2>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Patient Intake
+      </h2>
+      <form id="patient-form">
+        <div class="form-grid">
+          <div>
+            <label>Age (years)</label>
+            <input type="number" name="age" value="28" min="18" max="45" step="1" required/>
+          </div>
+          <div>
+            <label>BMI</label>
+            <input type="number" name="bmi" value="24.5" min="10" max="60" step="0.1" required/>
+          </div>
+          <div>
+            <label>FSH Level (mIU/mL)</label>
+            <input type="number" name="fsh_level" value="7.2" min="0" step="0.1" required/>
+          </div>
+          <div>
+            <label>LH Level (mIU/mL)</label>
+            <input type="number" name="lh_level" value="12.4" min="0" step="0.1" required/>
+          </div>
+          <div>
+            <label>AMH Level (ng/mL)</label>
+            <input type="number" name="amh_level" value="3.1" min="0" step="0.01" required/>
+          </div>
+          <div>
+            <label>TSH Level (μIU/mL)</label>
+            <input type="number" name="tsh_level" value="2.5" min="0" step="0.01" required/>
+          </div>
+          <div>
+            <label>Cycle Length (days)</label>
+            <input type="number" name="cycle_length_days" value="30" min="1" step="1" required/>
+          </div>
+          <div>
+            <label>Follicle Count</label>
+            <input type="number" name="follicle_count" value="10" min="0" step="1" required/>
+          </div>
+          <div>
+            <label>Fatigue Score (1–10)</label>
+            <input type="number" name="fatigue_score" value="5" min="1" max="10" step="1" required/>
+          </div>
+          <div>
+            <label>Weight Gain (kg)</label>
+            <input type="number" name="weight_gain_kg" value="3.0" min="0" step="0.5" required/>
+          </div>
+          <div class="condition-row">
+            <label>Condition to Assess</label>
+            <select name="condition">
+              <option value="pcos">PCOS</option>
+              <option value="endometriosis">Endometriosis</option>
+              <option value="thyroid">Thyroid Disorder</option>
+            </select>
+          </div>
+        </div>
+        <button id="predict-btn" class="btn" type="submit" data-label="Analyse Patient">Analyse Patient</button>
+      </form>
+    </div>
+
+    <!-- FL Status -->
+    <div class="card">
+      <h2>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Federated Learning Status
+      </h2>
+      <div class="fl-grid">
+        <div class="fl-stat"><div class="value" id="fl-rounds">—</div><div class="key">Rounds Complete</div></div>
+        <div class="fl-stat"><div class="value" id="fl-hospitals">—</div><div class="key">Hospitals</div></div>
+        <div class="fl-stat"><div class="value" id="fl-auc">—</div><div class="key">Last AUC</div></div>
+      </div>
+      <button id="fl-btn" class="btn btn-secondary" data-label="Run Federated Round">Run Federated Round</button>
+      <button id="fl-refresh-btn" class="btn btn-secondary" style="margin-top:8px" data-label="Refresh Status">Refresh Status</button>
+      <div class="status-msg" id="fl-status-msg"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT COL: gauge + insights -->
+  <div class="right-col">
+    <div class="card" style="margin-bottom:24px">
+      <h2>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Risk Assessment
+      </h2>
+
+      <div id="gauge-placeholder" class="placeholder">
+        <div class="icon">📊</div>
+        <div>Submit patient data to see risk score</div>
+      </div>
+
+      <div id="gauge-result" class="gauge-wrap" style="display:none">
+        <svg id="gauge-svg" class="gauge-svg" width="220" height="120" viewBox="0 0 220 120"></svg>
+        <div class="gauge-label" id="gauge-score">—</div>
+        <div class="gauge-level" id="gauge-level">—</div>
+        <div class="version-tag" id="model-version"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Early Risk Insight Card
+      </h2>
+
+      <div id="insight-placeholder" class="placeholder">
+        <div class="icon">🔬</div>
+        <div>Insights appear after risk analysis</div>
+      </div>
+
+      <div id="insight-wrap" style="display:none">
+        <div class="insight-section">
+          <h3>Key Indicators</h3>
+          <ul class="indicators" id="indicators-list"></ul>
+        </div>
+        <div class="insight-section">
+          <h3>Evidence Summary</h3>
+          <div class="evidence-box" id="evidence-text"></div>
+        </div>
+        <div class="insight-section steps">
+          <h3>Recommended Next Steps</h3>
+          <ol id="steps-list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
