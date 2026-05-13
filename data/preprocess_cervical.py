@@ -2,6 +2,11 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_selection import SelectKBest, f_classif
 import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from core.constants import FEATURES
 
 df = pd.read_csv("data/raw/cervical/cervical_cancer.csv", na_values="?")
 print("Columns:", df.columns.tolist())
@@ -37,13 +42,9 @@ X_sel = selector.fit_transform(X, y)
 selected_names = X.columns[selector.get_support()].tolist()
 print("Selected features:", selected_names)
 
-FEMNET_NAMES = ["age","bmi","fsh_level","lh_level","amh_level",
-                "tsh_level","cycle_length_days","follicle_count",
-                "fatigue_score","weight_gain_kg"]
-
-out = pd.DataFrame(X_sel, columns=FEMNET_NAMES[:k])
+out = pd.DataFrame(X_sel, columns=FEATURES[:k])
 # Pad missing columns with 0 if k < 10
-for name in FEMNET_NAMES[k:]:
+for name in FEATURES[k:]:
     if name not in out.columns:
         out[name] = 0.0
 out["label"] = y.values

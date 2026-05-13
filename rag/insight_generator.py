@@ -39,10 +39,18 @@ def generate_insight_card(
     condition: str,
 ) -> Dict:
     level = _risk_level(risk_score)
-    store = _ensure_store(condition)
+    try:
+        store = _ensure_store(condition)
+    except Exception as exc:
+        print(f"[RAG] Evidence store init failed: {exc}. Using fallback mode.")
+        store = None
     summary_text = _feature_summary(patient_features)
     query = f"{condition} risk factors: {summary_text}"
-    retrieved = store.query(query, k=3)
+    try:
+        retrieved = store.query(query, k=3) if store is not None else []
+    except Exception as exc:
+        print(f"[RAG] Evidence query failed: {exc}. Using fallback mode.")
+        retrieved = []
 
     api_key = os.getenv("OPENAI_API_KEY", "")
     if api_key:

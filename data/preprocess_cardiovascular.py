@@ -2,14 +2,17 @@ import os
 import pandas as pd
 import numpy as np
 
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from core.constants import FEATURES
+
 def preprocess_cardiovascular():
     input_path = os.path.join("data", "raw", "cardiovascular", "cardio_train.csv")
     output_path = os.path.join("data", "processed", "cardiovascular.csv")
 
-    schema_cols = [
-        'age', 'bmi', 'fsh_level', 'lh_level', 'amh_level', 'tsh_level', 
-        'cycle_length_days', 'follicle_count', 'fatigue_score', 'weight_gain_kg', 'label'
-    ]
+    schema_cols = FEATURES + ["label"]
 
     # Handle file reading with dummy fallback for demonstration if missing
     if not os.path.exists(input_path):

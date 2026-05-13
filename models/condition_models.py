@@ -5,15 +5,17 @@ import os
 import torch
 from models.base_model import ClinicalMLP
 
+from core.constants import SUPPORTED_CONDITIONS
+
 WEIGHTS_DIR = os.path.join(os.path.dirname(__file__), "weights")
 INPUT_DIM = 10  # all conditions share same 10-feature vector
 
-SUPPORTED = {"pcos", "breast_cancer", "cervical", "thyroid", "diabetes", "cardiovascular", "heart"}
+SUPPORTED = set(SUPPORTED_CONDITIONS)
 
 
 def get_model(condition: str) -> ClinicalMLP:
     if condition not in SUPPORTED:
-        raise ValueError(f"Unknown condition '{condition}'. Supported: {SUPPORTED}")
+        raise ValueError(f"Unknown condition '{condition}'. Supported: {sorted(SUPPORTED)}")
     model = ClinicalMLP(input_dim=INPUT_DIM)
     weight_path = _weight_path(condition)
     if os.path.exists(weight_path):

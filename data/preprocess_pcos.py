@@ -1,6 +1,11 @@
 import pandas as pd
 import numpy as np
 import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from core.constants import FEATURES
 
 # --- Load both PCOS datasets ---
 # Print columns first to verify names, then adjust the column_map below
@@ -36,10 +41,6 @@ column_map = {
     "PCOS (Y/N)":           "label",
 }
 df = df.rename(columns=column_map)
-
-FEATURES = ["age","bmi","fsh_level","lh_level","amh_level",
-            "tsh_level","cycle_length_days","follicle_count",
-            "fatigue_score","weight_gain_kg"]
 
 # Keep only columns that exist after renaming
 available = [c for c in FEATURES if c in df.columns]

@@ -13,12 +13,7 @@ from typing import Dict, List, Tuple
 
 import flwr as fl
 from models.base_model import ClinicalMLP, get_parameters, set_parameters
-
-FEATURES = [
-    "age", "bmi", "fsh_level", "lh_level", "amh_level",
-    "tsh_level", "cycle_length_days", "follicle_count",
-    "fatigue_score", "weight_gain_kg",
-]
+from core.constants import FEATURES
 BATCH_SIZE = 32
 LOCAL_EPOCHS = 5
 LR = 3e-4

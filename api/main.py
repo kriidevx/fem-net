@@ -13,12 +13,14 @@ from fastapi.staticfiles import StaticFiles
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from api.routes import predict, insights, federated
+from core.constants import SUPPORTED_CONDITIONS
 
 DASHBOARD_DIR = os.path.join(os.path.dirname(__file__), "..", "dashboard")
 
 
-ALL_CONDITIONS = ["pcos", "breast_cancer", "cervical", "thyroid", "diabetes", "cardiovascular", "heart"]
+ALL_CONDITIONS = SUPPORTED_CONDITIONS
 PROCESSED_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "processed")
+WEIGHTS_DIR = os.path.join(os.path.dirname(__file__), "..", "models", "weights")
 
 
 @asynccontextmanager
@@ -26,8 +28,17 @@ async def lifespan(app: FastAPI):
     # check real datasets exist — never generate synthetic data
     missing = [c for c in ALL_CONDITIONS if not os.path.exists(os.path.join(PROCESSED_DIR, f"{c}.csv"))]
     if missing:
-        print(f"[startup] Warning: processed CSVs missing for: {missing}")
-        print("[startup] Run data/preprocess_<condition>.py for each missing condition.")
+        print(f"[WARN] Missing processed CSVs for: {missing}")
+        print("[WARN] Some training/simulation flows may fail. Run data/preprocess_<condition>.py.")
+
+    # warn if model artifacts are missing (non-fatal for submission)
+    for cond in ALL_CONDITIONS:
+        weights_path = os.path.join(WEIGHTS_DIR, f"{cond}_global.pt")
+        stats_path = os.path.join(WEIGHTS_DIR, f"{cond}_norm_stats.json")
+        if not os.path.exists(weights_path):
+            print(f"[WARN] Missing weights for {cond} model ({weights_path}). Predictions may be untrained.")
+        if not os.path.exists(stats_path):
+            print(f"[WARN] Missing norm stats for {cond} model ({stats_path}). Predictions run unnormalised.")
 
     # pre-warm FAISS indexes (best-effort, requires network for PubMed)
     try:

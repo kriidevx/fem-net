@@ -49,7 +49,11 @@ function updateProvenance() {
   card.style.display = 'block';
 }
 
-const API = '';
+// If opened via VS Code preview or directly from disk, relative /api calls won't work.
+// Default to the local FastAPI server for submission-day reliability.
+const API = (location.protocol === 'http:' || location.protocol === 'https:')
+  ? ''
+  : 'http://localhost:8000';
 
 // ── Gauge ──────────────────────────────────────────────────────────────────
 function drawGauge(score) {

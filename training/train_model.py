@@ -20,12 +20,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score, confusion_matrix
 
 from models.base_model import ClinicalMLP
-
-FEATURES = [
-    "age", "bmi", "fsh_level", "lh_level", "amh_level",
-    "tsh_level", "cycle_length_days", "follicle_count",
-    "fatigue_score", "weight_gain_kg",
-]
+from core.constants import FEATURES, SUPPORTED_CONDITIONS
 
 
 def train(condition: str, epochs: int = 50, lr: float = 3e-4, batch: int = 64):
@@ -70,7 +65,7 @@ def train(condition: str, epochs: int = 50, lr: float = 3e-4, batch: int = 64):
         batch_size=batch
     )
 
-    model   = ClinicalMLP(input_dim=10)
+    model   = ClinicalMLP(input_dim=len(FEATURES))
     opt     = torch.optim.Adam(model.parameters(), lr=lr)
     loss_fn = nn.BCELoss()
 
@@ -120,9 +115,8 @@ def train(condition: str, epochs: int = 50, lr: float = 3e-4, batch: int = 64):
 
 
 if __name__ == "__main__":
-    ALL = ["pcos","breast_cancer","cervical","thyroid","diabetes","cardiovascular","heart", "endometriosis"]
     parser = argparse.ArgumentParser()
-    parser.add_argument("--condition", required=True, choices=ALL)
+    parser.add_argument("--condition", required=True, choices=SUPPORTED_CONDITIONS)
     parser.add_argument("--epochs", type=int, default=50)
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--batch", type=int, default=64)

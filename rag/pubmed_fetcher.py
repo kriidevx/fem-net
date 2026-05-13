@@ -6,12 +6,17 @@ import os
 import time
 from typing import List, Dict
 
-from Bio import Entrez
+try:  # pragma: no cover
+    from Bio import Entrez  # type: ignore
+except Exception:  # pragma: no cover
+    Entrez = None  # type: ignore
 
 CACHE_DIR = os.path.join(os.path.dirname(__file__), "cache")
 CACHE_TTL_SECONDS = 86400  # 24 h
+ENTREZ_TIMEOUT_SECONDS = 10
 
-Entrez.email = os.getenv("ENTREZ_EMAIL", "researcher@fem-net.ai")
+if Entrez is not None:
+    Entrez.email = os.getenv("ENTREZ_EMAIL", "researcher@fem-net.ai")
 
 
 def fetch_pubmed_abstracts(condition: str, max_results: int = 20) -> List[Dict]:
@@ -22,6 +27,12 @@ def fetch_pubmed_abstracts(condition: str, max_results: int = 20) -> List[Dict]:
     if _cache_valid(cache_path):
         with open(cache_path) as f:
             return json.load(f)
+
+    if Entrez is None:
+        # Dependency missing: treat as no evidence available.
+        with open(cache_path, "w") as f:
+            json.dump([], f, indent=2)
+        return []
 
     query = f"{condition} early detection diagnosis women"
     try:
@@ -43,7 +54,7 @@ def _cache_valid(path: str) -> bool:
 
 
 def _fetch(query: str, max_results: int) -> List[Dict]:
-    handle = Entrez.esearch(db="pubmed", term=query, retmax=max_results)
+    handle = Entrez.esearch(db="pubmed", term=query, retmax=max_results, timeout=ENTREZ_TIMEOUT_SECONDS)
     record = Entrez.read(handle)
     handle.close()
 
@@ -51,7 +62,13 @@ def _fetch(query: str, max_results: int) -> List[Dict]:
     if not ids:
         return []
 
-    handle = Entrez.efetch(db="pubmed", id=",".join(ids), rettype="abstract", retmode="xml")
+    handle = Entrez.efetch(
+        db="pubmed",
+        id=",".join(ids),
+        rettype="abstract",
+        retmode="xml",
+        timeout=ENTREZ_TIMEOUT_SECONDS,
+    )
     records = Entrez.read(handle)
     handle.close()
 

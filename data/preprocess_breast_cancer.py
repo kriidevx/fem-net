@@ -1,5 +1,10 @@
 import pandas as pd
 import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from core.constants import FEATURES
 
 df = pd.read_csv("data/raw/breast_cancer/data.csv")
 print("Columns:", df.columns.tolist())
@@ -20,10 +25,7 @@ df["label"] = (df["diagnosis"] == "M").astype(int)
 out = df[FEATURES_SRC + ["label"]].dropna().copy()
 
 # Rename to FEM-NET standard names (positional mapping)
-FEMNET_NAMES = ["age","bmi","fsh_level","lh_level","amh_level",
-                "tsh_level","cycle_length_days","follicle_count",
-                "fatigue_score","weight_gain_kg"]
-rename_map = dict(zip(FEATURES_SRC, FEMNET_NAMES))
+rename_map = dict(zip(FEATURES_SRC, FEATURES))
 out = out.rename(columns=rename_map)
 
 os.makedirs("data/processed", exist_ok=True)

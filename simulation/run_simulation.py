@@ -21,17 +21,12 @@ from federated.client import FemNetClient
 from federated.strategy import KrumStrategy
 from models.base_model import ClinicalMLP, get_parameters, set_parameters
 from models.condition_models import save_model
+from core.constants import FEATURES, SUPPORTED_CONDITIONS
 
 RESULTS_DIR = os.path.dirname(__file__)
 PROCESSED_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "processed")
-FEATURES_DIM = 10
+FEATURES_DIM = len(FEATURES)
 NUM_HOSPITALS = 3
-
-FEATURES = [
-    "age", "bmi", "fsh_level", "lh_level", "amh_level",
-    "tsh_level", "cycle_length_days", "follicle_count",
-    "fatigue_score", "weight_gain_kg",
-]
 
 
 def _split_non_iid(condition: str) -> list[str]:
@@ -151,9 +146,8 @@ def run_federated_simulation(condition: str = "pcos", num_rounds: int = 5) -> di
 
 
 if __name__ == "__main__":
-    ALL_CONDITIONS = ["pcos", "breast_cancer", "cervical", "thyroid", "diabetes", "cardiovascular", "heart"]
     parser = argparse.ArgumentParser()
-    parser.add_argument("--condition", default="pcos", choices=ALL_CONDITIONS)
+    parser.add_argument("--condition", default="pcos", choices=SUPPORTED_CONDITIONS)
     parser.add_argument("--rounds", type=int, default=5)
     args = parser.parse_args()
     run_federated_simulation(args.condition, args.rounds)

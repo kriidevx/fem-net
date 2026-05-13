@@ -9,14 +9,9 @@ from fastapi import APIRouter, HTTPException
 
 from api.schemas import PatientInput, PredictionResponse
 from models.condition_models import get_model
+from core.constants import FEATURES
 
 router = APIRouter()
-
-FEATURES = [
-    "age", "bmi", "fsh_level", "lh_level", "amh_level",
-    "tsh_level", "cycle_length_days", "follicle_count",
-    "fatigue_score", "weight_gain_kg",
-]
 WEIGHTS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "models", "weights")
 
 _norm_cache: dict = {}

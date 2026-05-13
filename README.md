@@ -18,6 +18,34 @@
 
 ---
 
+# Submission Demo (Windows)
+
+1. Install
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Run
+
+```bash
+python run.py serve
+```
+
+3. Open
+
+http://localhost:8000
+
+4. Federated demo
+
+- Click “Run Federated”
+- Wait ~30 seconds
+- Click refresh to see rounds/AUC update
+
+Notes:
+- Insights work even without an OpenAI key (automatic fallback mode)
+- Use Python 3.10 or 3.11 (recommended). Python 3.13 will not work with the current Flower/NumPy requirements.
+
 ## What is FEM-NET?
 
 FEM-NET is a federated learning platform where multiple hospitals collaboratively train early-detection AI models for women's health — without sharing a single row of patient data. Each hospital trains locally; only compressed weight updates flow to a central aggregator that uses **Byzantine-robust Krum filtering** to resist poisoned updates.
